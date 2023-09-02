@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+  <h1>QR Code Generator</h1>
+
+  <!-- QR code generation form -->
+  <form action="/generate" method="POST">
+    <input type="text" name="text" placeholder="Enter text/URL">
+    <button type="submit">Generate QR Code</button>
+  </form>
+
+  <% if (qrCodeURL) { %>
+    <!-- Display the generated QR code if available -->
+    <h2>Generated QR Code</h2>
+    <img src="<%= qrCodeURL %>" alt="QR Code">
+  <% } %>
+
+  <!-- Email sending form -->
+  <h2>Send QR Code via Email</h2>
+  <form action="/email/send" method="POST">
+    <input type="email" name="recipientEmail" placeholder="Recipient's Email">
+    <input type="hidden" name="qrCodeURL" value="<%= qrCodeURL %>">
+    <button type="submit">Send Email</button>
+  </form>
+</body>
+</html>
