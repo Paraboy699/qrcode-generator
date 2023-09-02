@@ -2,6 +2,49 @@
 <html>
 <head>
   <link rel="stylesheet" href="/styles/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+   $(document).ready(function() {
+  $("#emailForm").submit(function(event) {
+    event.preventDefault(); // Prevent form submission
+
+    // Get form data
+    var recipientEmail = $("#recipientEmail").val();
+    var qrCodeURL = $("#qrCodeURL").val();
+
+    // Send AJAX request
+    $.ajax({
+      type: "POST",
+      url: "/email/send",
+      data: {
+        recipientEmail: recipientEmail,
+        qrCodeURL: qrCodeURL
+      },
+      success: function(response) {
+        // Display success message with animation
+        $("#emailSuccess")
+          .text(response)
+          .show()
+          .removeClass("animated slideOutRight") // Remove any previous animation class
+          .addClass("animated slideInRight"); // Add slideInRight animation class
+
+        // Hide the message after 3 seconds with animation
+        setTimeout(function() {
+          $("#emailSuccess")
+            .removeClass("slideInRight")
+            .addClass("slideOutRight");
+        }, 3000);
+      },
+      error: function(xhr, status, error) {
+        // Display error message
+        $("#emailError").text("An error occurred while sending the email.");
+      }
+    });
+  });
+});
+
+
+  </script>
 </head>
 <body>
   <h1>QR Code Generator</h1>
@@ -12,18 +55,22 @@
     <button type="submit">Generate QR Code</button>
   </form>
 
+  <!-- Display the generated QR code if available -->
   <% if (qrCodeURL) { %>
-    <!-- Display the generated QR code if available -->
     <h2>Generated QR Code</h2>
     <img src="<%= qrCodeURL %>" alt="QR Code">
   <% } %>
 
   <!-- Email sending form -->
   <h2>Send QR Code via Email</h2>
-  <form action="/email/send" method="POST">
-    <input type="email" name="recipientEmail" placeholder="Recipient's Email">
-    <input type="hidden" name="qrCodeURL" value="<%= qrCodeURL %>">
+  <form id="emailForm">
+    <input type="email" id="recipientEmail" placeholder="Recipient's Email">
+    <input type="hidden" id="qrCodeURL" value="<%= qrCodeURL %>">
     <button type="submit">Send Email</button>
   </form>
+
+  <!-- Email success/error messages -->
+  <div id="emailSuccess"></div>
+  <div id="emailError"></div>
 </body>
 </html>
