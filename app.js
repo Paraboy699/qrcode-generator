@@ -19,4 +19,5 @@ app.use((err, req, res, next) => {
 
 app.listen(3000, () => {
   console.log("Server running on port 3000");
+  console.log("Local host at http://localhost:3000");
 });
